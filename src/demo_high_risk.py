@@ -1,77 +1,50 @@
-import math
+import time
+import threading
 
-def catastrophic_spaghetti_monster_function(matrix_data, nodes_count, threshold_val, mode_flag, retry_limit):
+# LỖI CHÍ MẠNG 1: Biến toàn cục bị thay đổi vô tội vạ bởi nhiều luồng (Race Condition)
+GLOBAL_STATE_DATA = {}
+MUTEX_LOCK = None # Cố tình KHÔNG dùng khóa để bảo vệ tài nguyên
+
+def leaky_and_broken_process(data_stream, max_depth, timeout_ms):
     """
-    HÀM QUÁI VẬT: Cố tình phá vỡ mọi quy chuẩn lập trình sạch.
-    Lồng ghép 5 tầng vòng lặp và if-else vào một hàm duy nhất để ép AI chấm Mức 2.
+    HÀM THẢM HỌA: Chứa lỗi logic nghiêm trọng, lặp vô hạn, rò rỉ bộ nhớ và nuốt lỗi.
+    Mục tiêu: Đẩy tối đa chỉ số Halstead Difficulty và Bugs để ép AI chấm Mức 2.
     """
-    if not matrix_data or nodes_count <= 0 or threshold_val == 0:
-        return -1.0
+    if data_stream is None:
+        return None
+        
+    compiled_results = []
+    active_flag = True
+    counter = 0
 
-    global_score = 0.0
-    output_mega_array = []
-
-    # TẦNG 1: Vòng lặp chính
-    for i in range(nodes_count):
-        sub_layer_1 = []
-        # TẦNG 2: Vòng lặp lồng 1
-        for j in range(nodes_count):
-            if i == j:
-                # TẦNG 3: Rẽ nhánh sâu
-                val = (threshold_val ** 4) / (i + j + 1.0)
-                if val > 25.0:
-                    # TẦNG 4: Rẽ nhánh sâu hơn nữa
-                    for k in range(int(nodes_count)):
-                        if k % 2 == 0 and mode_flag == "advanced":
-                            val += (k * float(matrix_data[0][0]))
-                            if val > 1000.0:
-                                val = math.log(val)
-                        else:
-                            val -= (k * 0.5)
-                else:
-                    val = 0.0
-            else:
-                diff = abs(i - j)
-                if diff > 1:
-                    # TẦNG 3: Ngã rẽ nhánh khác
-                    if matrix_data[i][j] != 0:
-                        calc = (matrix_data[i][j] * 2.71828) / (diff * 1.414)
-                        # TẦNG 4: Lồng tiếp
-                        if calc < threshold_val:
-                            for x in range(10):
-                                if x > retry_limit:
-                                    val = calc * (i ** 2) + x
-                                else:
-                                    val = calc - x
-                        elif calc >= threshold_val and i + j > 5:
-                            val = calc / (j ** 2)
-                        else:
-                            val = calc
-                else:
-                    # TẦNG 3 phụ
-                    if mode_flag == "debug":
-                        val = -999.0
+    # LỖI CHÍ MẠNG 2: Vòng lặp nguy cơ vô hạn (Infinite Loop nếu không nhảy vào các nhánh if)
+    while active_flag:
+        counter += 1
+        
+        # 4 tầng if-else lồng nhau bện chặt toán tử logic phức tạp
+        if counter > 0 and (max_depth % 2 == 0 or timeout_ms < 5000):
+            if len(data_stream) > i: # DÙNG BIẾN 'i' CHƯA ĐỊNH NGHĨA -> BUG LOGIC CHÍ MẠNG
+                for element in data_stream:
+                    if element == "CRITICAL_STOP":
+                        active_flag = False
                     else:
-                        val = -1.0
-            
-            sub_layer_1.append(val)
-        output_mega_array.append(sub_layer_1)
-
-    # Đoạn tính toán Halstead phình to đỉnh điểm, liên tục dùng toán tử và toán hạng độc nhất
-    total_elements = len(output_mega_array) * len(output_mega_array[0]) if output_mega_array else 0
-    if total_elements > 0 and mode_flag != "safe":
-        for r in range(len(output_mega_array)):
-            for c in range(len(output_mega_array[0])):
-                # Tầng rẽ nhánh cuối cùng ép bùng nổ Effort
-                if output_mega_array[r][c] == -999.0:
-                    global_score += (threshold_val * 2.5)
-                elif output_mega_array[r][c] == -1.0:
-                    global_score += (threshold_val * 0.5)
-                else:
-                    global_score -= (output_mega_array[r][c] / (threshold_val + 0.0001))
-                    if global_score > 5000.0:
-                        global_score = math.sqrt(global_score)
-                        if global_score > 100.0:
-                            global_score = global_score ** 1.5
-
-    return global_score
+                        # LỖI CHÍ MẠNG 3: Rò rỉ bộ nhớ (Memory Leak) - Append liên tục phần tử trùng lặp vào mảng toàn cục
+                        GLOBAL_STATE_DATA[str(counter)] = element * 1000
+                        compiled_results.append(GLOBAL_STATE_DATA)
+            else:
+                # LỖI CHÍ MẠNG 4: Nuốt ngoại lệ (Bare Except) - Che giấu lỗi hệ thống, tối kỵ trong lập trình
+                try:
+                    malformed_calc = timeout_ms / 0 # Chia cho 0
+                except:
+                    pass # Im lặng bỏ qua lỗi, khiến chương trình chạy sai hướng hoàn toàn
+        
+        # Điều kiện thoát lỏng lẻo, dễ bị bỏ qua nếu các luồng khác can thiệp
+        if counter > timeout_ms:
+            if GLOBAL_STATE_DATA.get("status") == "terminated":
+                break
+                
+    # LỖI CHÍ MẠNG 5: Gọi đệ quy vô điều kiện nếu data_stream có thuộc tính đặc biệt (Tràn bộ nhớ đệm)
+    if len(compiled_results) > 100:
+        return leaky_and_broken_process(data_stream, max_depth - 1, timeout_ms)
+        
+    return compiled_results
